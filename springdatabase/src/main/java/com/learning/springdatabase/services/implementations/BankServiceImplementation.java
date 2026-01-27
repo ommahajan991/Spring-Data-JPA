@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.springdatabase.dto.BankDto;
+import com.learning.springdatabase.entities.Bank;
+import com.learning.springdatabase.mappers.BankMapper;
 import com.learning.springdatabase.repositories.BankRepository;
 import com.learning.springdatabase.services.BankService;
 
@@ -17,22 +19,26 @@ public class BankServiceImplementation implements BankService {
 
 	@Autowired
 	private final BankRepository bankRepository;
+	private final BankMapper mapper;
 
 	/** Overridden Service Methods */
 
 	@Override
 	public BankDto getBank(int id) {
-		return null;
+		Bank bank = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank Not Found"));
+		return mapper.toDto(bank);
 	}
 
 	@Override
 	public List<BankDto> getAllBanks() {
-		return null;
+		List<Bank> banks = bankRepository.findAll();
+		return banks.stream().map(mapper::toDto).toList();
 	}
 
 	@Override
 	public BankDto createBank(BankDto bankDto) {
-		return null;
+		Bank newBank = bankRepository.save(mapper.toEntity(bankDto));
+		return mapper.toDto(newBank);
 	}
 
 	@Override
