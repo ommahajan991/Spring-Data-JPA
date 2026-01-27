@@ -26,7 +26,10 @@ public class Bank {
 	private String name;
 
 	@Column(nullable = false)
-	private String bankCode;
+	private String ifscPrefix;
+
+	@Column(nullable = false)
+	private String type;
 
 	@CreationTimestamp
 	private LocalDateTime createdAt;
