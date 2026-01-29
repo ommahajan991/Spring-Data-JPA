@@ -43,16 +43,23 @@ public class BankServiceImplementation implements BankService {
 
 	@Override
 	public BankDto updateBank(int id, BankDto bankDto) {
-		return null;
+		Bank existingBank = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank Not Found"));
+
+		existingBank.setName(bankDto.getName());
+		existingBank.setIfscPrefix(bankDto.getIfscPrefix());
+		existingBank.getType();
+
+		Bank updatedBAnk = bankRepository.save(existingBank);
+		return mapper.toDto(updatedBAnk);
 	}
 
 	@Override
 	public void deleteBank(int id) {
-
+		bankRepository.deleteById(id);
 	}
 
 	@Override
-	public void deleteAllBanks(int id) {
-
+	public void deleteAllBanks() {
+		bankRepository.deleteAll();
 	}
 }

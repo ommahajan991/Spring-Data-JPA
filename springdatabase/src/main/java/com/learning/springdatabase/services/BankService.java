@@ -17,6 +17,7 @@ public interface BankService {
 	public BankDto updateBank(int id, BankDto bankDto);
 
 	public void deleteBank(int id);
-	
-	public void deleteAllBanks(int id);
+
+	public void deleteAllBanks();
+
 }
