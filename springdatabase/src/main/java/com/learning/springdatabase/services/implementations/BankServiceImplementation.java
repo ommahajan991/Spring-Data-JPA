@@ -1,11 +1,13 @@
 package com.learning.springdatabase.services.implementations;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.springdatabase.dto.BankDto;
+import com.learning.springdatabase.dto.UpdateBankTypeRequestDto;
 import com.learning.springdatabase.entities.Bank;
 import com.learning.springdatabase.mappers.BankMapper;
 import com.learning.springdatabase.repositories.BankRepository;
@@ -36,6 +38,16 @@ public class BankServiceImplementation implements BankService {
 	}
 
 	@Override
+	public BankDto getBankByifscPrefix(String ifscPrefix) {
+
+		Optional<Bank> bank = bankRepository.getByifscPrefix(ifscPrefix);
+		if (bank.isPresent()) {
+			return mapper.toDto(bank.get());
+		}
+		return null;
+	}
+
+	@Override
 	public BankDto createBank(BankDto bankDto) {
 		Bank newBank = bankRepository.save(mapper.toEntity(bankDto));
 		return mapper.toDto(newBank);
@@ -47,10 +59,20 @@ public class BankServiceImplementation implements BankService {
 
 		existingBank.setName(bankDto.getName());
 		existingBank.setIfscPrefix(bankDto.getIfscPrefix());
-		existingBank.getType();
+		existingBank.setType(bankDto.getType());
 
-		Bank updatedBAnk = bankRepository.save(existingBank);
-		return mapper.toDto(updatedBAnk);
+		Bank updatedBank = bankRepository.save(existingBank);
+		return mapper.toDto(updatedBank);
+	}
+
+	@Override
+	public BankDto updateBankType(int id, UpdateBankTypeRequestDto dto) {
+		Bank existingbank = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank Not Found"));
+
+		existingbank.setType(dto.getType());
+
+		Bank updatedBank = bankRepository.save(existingbank);
+		return mapper.toDto(updatedBank);
 	}
 
 	@Override
