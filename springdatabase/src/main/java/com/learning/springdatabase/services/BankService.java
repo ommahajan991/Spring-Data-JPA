@@ -14,6 +14,8 @@ public interface BankService {
 	public List<BankDto> getAllBanks();
 	
 	public BankDto getBankByifscPrefix(String ifscPrefix);
+	
+	public BankDto getBankByNameAndType(String name, String type);
 
 	public BankDto createBank(BankDto bankDto);
 

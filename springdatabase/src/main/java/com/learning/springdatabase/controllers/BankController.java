@@ -62,6 +62,11 @@ public class BankController {
 		}
 	}
 
+	@GetMapping("name-type/{name}/{type}")
+	public ResponseEntity<BankDto> getBankByNameAndType(String name, String type) {
+		return ResponseEntity.ok(bankService.getBankByNameAndType(name, type));
+	}
+
 	@PostMapping
 	public ResponseEntity<BankDto> createBank(@RequestBody BankDto bankDto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(bankService.createBank(bankDto));

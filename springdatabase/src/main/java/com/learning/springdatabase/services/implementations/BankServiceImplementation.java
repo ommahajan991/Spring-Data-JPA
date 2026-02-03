@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.learning.springdatabase.dto.BankDto;
 import com.learning.springdatabase.dto.UpdateBankTypeRequestDto;
 import com.learning.springdatabase.entities.Bank;
+import com.learning.springdatabase.exceptionHandlers.ResourceNotFoundException;
 import com.learning.springdatabase.mappers.BankMapper;
 import com.learning.springdatabase.repositories.BankRepository;
 import com.learning.springdatabase.services.BankService;
@@ -27,7 +28,7 @@ public class BankServiceImplementation implements BankService {
 
 	@Override
 	public BankDto getBank(int id) {
-		Bank bank = bankRepository.findById(id).orElseThrow(() -> new RuntimeException("Bank Not Found"));
+		Bank bank = bankRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bank Not Found"));
 		return mapper.toDto(bank);
 	}
 
@@ -45,6 +46,12 @@ public class BankServiceImplementation implements BankService {
 			return mapper.toDto(bank.get());
 		}
 		return null;
+	}
+	
+	@Override
+	public BankDto getBankByNameAndType(String name, String type) {
+	Bank bank = bankRepository.getBankByNameAndType(name, type);
+		return mapper.toDto(bank);
 	}
 
 	@Override
