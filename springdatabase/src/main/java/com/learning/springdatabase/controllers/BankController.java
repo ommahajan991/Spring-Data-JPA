@@ -2,6 +2,10 @@ package com.learning.springdatabase.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.springdatabase.dto.BankDto;
@@ -67,6 +72,19 @@ public class BankController {
 		return ResponseEntity.ok(bankService.getBankByNameAndType(name, type));
 	}
 
+	@GetMapping("/pagination")
+	public ResponseEntity<List<BankDto>> getBanks(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size,
+			@RequestParam(defaultValue = "name") String sortBy,
+			@RequestParam(defaultValue = "asc") String sortDirection) {
+		
+		Sort sort = sortDirection.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+		Pageable pageable = PageRequest.of(page, size, sort);
+		Page<BankDto> banks = bankService.findBanks(pageable);
+		return ResponseEntity.ok(banks.toList());
+	}
+
 	@PostMapping
 	public ResponseEntity<BankDto> createBank(@RequestBody BankDto bankDto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(bankService.createBank(bankDto));
@@ -75,6 +93,11 @@ public class BankController {
 	@PutMapping("/{id}")
 	public ResponseEntity<BankDto> updateBank(@PathVariable int id, @RequestBody BankDto bankDto) {
 		return ResponseEntity.ok(bankService.updateBank(id, bankDto));
+	}
+	
+	@PostMapping("/multiple-insert")
+	public ResponseEntity<List<BankDto>> insertMultipleBanks(){
+		return ResponseEntity.ok(bankService.addBulkBanks());
 	}
 
 	@PatchMapping("/{id}")

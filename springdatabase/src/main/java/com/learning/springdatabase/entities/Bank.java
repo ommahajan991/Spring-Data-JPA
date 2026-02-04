@@ -11,11 +11,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Bank {
 
 	@Id
@@ -36,4 +38,10 @@ public class Bank {
 
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
+
+	public Bank(String name, String ifscPrefix, String type) {
+		this.name = name;
+		this.ifscPrefix = ifscPrefix;
+		this.type = type;
+	}	
 }

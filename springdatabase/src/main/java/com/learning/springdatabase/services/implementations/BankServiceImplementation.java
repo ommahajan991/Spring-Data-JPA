@@ -1,9 +1,12 @@
 package com.learning.springdatabase.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.learning.springdatabase.dto.BankDto;
@@ -47,17 +50,34 @@ public class BankServiceImplementation implements BankService {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public BankDto getBankByNameAndType(String name, String type) {
-	Bank bank = bankRepository.getBankByNameAndType(name, type);
+		Bank bank = bankRepository.getBankByNameAndType(name, type);
 		return mapper.toDto(bank);
+	}
+
+	@Override
+	public Page<BankDto> findBanks(Pageable pageable) {
+		Page<Bank> banks = bankRepository.findAll(pageable);
+		return banks.map(mapper::toDto);
 	}
 
 	@Override
 	public BankDto createBank(BankDto bankDto) {
 		Bank newBank = bankRepository.save(mapper.toEntity(bankDto));
 		return mapper.toDto(newBank);
+	}
+
+	@Override
+	public List<BankDto> addBulkBanks() {
+		List<Bank> banks = new ArrayList<Bank>();
+		
+		banks.add(new Bank("Canara Bank", "Cb34563214", "Private"));
+		banks.add(new Bank("Swiss Bank", "SWSB45673245", "International"));
+		banks.add(new Bank("City Bank", "CTBK23458765", "State"));
+		bankRepository.saveAll(banks);
+		return banks.stream().map(mapper::toDto).toList();
 	}
 
 	@Override
